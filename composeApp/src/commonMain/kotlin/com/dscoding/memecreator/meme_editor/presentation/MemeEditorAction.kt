@@ -14,7 +14,7 @@ sealed interface MemeEditorAction {
 
     data object OnAddTextClick : MemeEditorAction
     data class OnSelectMemeText(val id: String) : MemeEditorAction
-    data class OnEditMemeText(val id: MemeText) : MemeEditorAction
+    data class OnEditMemeText(val id: String) : MemeEditorAction
     data class OnMemeTextChange(val id: String, val text: String) : MemeEditorAction
     data class OnDeleteMemeText(val id: String) : MemeEditorAction
 
