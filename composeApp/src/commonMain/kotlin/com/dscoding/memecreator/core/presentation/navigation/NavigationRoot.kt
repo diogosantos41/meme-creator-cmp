@@ -1,0 +1,36 @@
+package com.dscoding.memecreator.core.presentation.navigation
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import com.dscoding.memecreator.core.presentation.memeTemplates
+import com.dscoding.memecreator.meme_editor.presentation.MemeEditorRoot
+import com.dscoding.memecreator.meme_gallery.presentation.MemeGalleryScreen
+
+@Composable
+fun NavigationRoot() {
+    val navController = rememberNavController()
+    NavHost(
+        navController = navController,
+        startDestination = Route.MemeGallery
+    ) {
+        composable<Route.MemeGallery> {
+            MemeGalleryScreen(
+                onMemeTemplateSelected = { memeTemplate ->
+                    navController.navigate(Route.MemeEditor(memeTemplate.id))
+                }
+            )
+        }
+
+        composable<Route.MemeEditor> { backStackEntry ->
+            val templateId = backStackEntry.toRoute<Route.MemeEditor>().templateId
+            val template = remember(templateId) {
+                memeTemplates.first { it.id == templateId }
+            }
+            MemeEditorRoot(template = template)
+        }
+    }
+}
