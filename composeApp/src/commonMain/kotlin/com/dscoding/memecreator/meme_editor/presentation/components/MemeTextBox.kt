@@ -50,7 +50,7 @@ fun MemeTextBox(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     LaunchedEffect(textBoxInteractionState) {
-        if (textBoxInteractionState is TextBoxInteractionState.Editing) {
+        if(textBoxInteractionState is TextBoxInteractionState.Editing) {
             memeTextFocusRequester.requestFocus()
             delay(100)
             keyboardController?.show()
@@ -58,24 +58,29 @@ fun MemeTextBox(
     }
 
     LaunchedEffect(textBoxInteractionState, memeText.id) {
-        if (textBoxInteractionState !is TextBoxInteractionState.Editing) {
+        if(textBoxInteractionState !is TextBoxInteractionState.Selected) {
             focusManager.clearFocus()
         }
     }
 
-    Box(modifier = modifier) {
+    Box(modifier) {
+        val isMemeTextSelected = (textBoxInteractionState is TextBoxInteractionState.Selected &&
+                textBoxInteractionState.textBoxId == memeText.id) ||
+                (textBoxInteractionState is TextBoxInteractionState.Editing &&
+                        textBoxInteractionState.textBoxId == memeText.id)
         Box(
             modifier = Modifier
                 .sizeIn(maxWidth = maxWidth, maxHeight = maxHeight)
                 .border(
                     width = 2.dp,
-                    color = if (textBoxInteractionState is TextBoxInteractionState.Selected || textBoxInteractionState is TextBoxInteractionState.Editing) {
+                    color = if(isMemeTextSelected) {
                         Color.White
                     } else Color.Transparent,
                     shape = RoundedCornerShape(4.dp)
                 )
                 .background(
-                    color = if (textBoxInteractionState is TextBoxInteractionState.Editing) {
+                    color = if(textBoxInteractionState is TextBoxInteractionState.Editing &&
+                        textBoxInteractionState.textBoxId == memeText.id) {
                         Color.Black.copy(alpha = 0.15f)
                     } else Color.Transparent,
                     shape = RoundedCornerShape(4.dp)
@@ -88,7 +93,8 @@ fun MemeTextBox(
             val strokeTextStyle = rememberStrokeTextStyle()
             val fillTextStyle = rememberFillTextStyle()
             val textPadding = 8.dp
-            if (textBoxInteractionState is TextBoxInteractionState.Editing) {
+            if(textBoxInteractionState is TextBoxInteractionState.Editing &&
+                textBoxInteractionState.textBoxId == memeText.id) {
                 OutlinedImpactTextField(
                     text = memeText.text,
                     onTextChange = onTextChange,
@@ -105,15 +111,15 @@ fun MemeTextBox(
                     text = memeText.text,
                     strokeTextStyle = strokeTextStyle,
                     fillTextStyle = fillTextStyle,
-                    modifier = Modifier.padding(textPadding)
+                    modifier = Modifier
+                        .padding(textPadding)
                 )
             }
         }
-        if (textBoxInteractionState is TextBoxInteractionState.Selected
-            || textBoxInteractionState is TextBoxInteractionState.Editing
-        ) {
+        if(isMemeTextSelected) {
             Box(
-                modifier = Modifier.sizeIn(24.dp)
+                modifier = Modifier
+                    .size(24.dp)
                     .align(Alignment.TopEnd)
                     .offset(
                         x = 12.dp,
@@ -130,7 +136,7 @@ fun MemeTextBox(
                     imageVector = Icons.Default.Close,
                     contentDescription = null,
                     tint = Color.White,
-                    modifier = Modifier.size(26.dp)
+                    modifier = Modifier.size(16.dp)
                 )
             }
         }

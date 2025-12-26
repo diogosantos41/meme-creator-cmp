@@ -24,13 +24,17 @@ fun NavigationRoot() {
                 }
             )
         }
-
-        composable<Route.MemeEditor> { backStackEntry ->
-            val templateId = backStackEntry.toRoute<Route.MemeEditor>().templateId
+        composable<Route.MemeEditor> {
+            val templateId = it.toRoute<Route.MemeEditor>().templateId
             val template = remember(templateId) {
                 memeTemplates.first { it.id == templateId }
             }
-            MemeEditorRoot(template = template)
+            MemeEditorRoot(
+                template = template,
+                onGoBack = {
+                    navController.navigateUp()
+                }
+            )
         }
     }
 }
