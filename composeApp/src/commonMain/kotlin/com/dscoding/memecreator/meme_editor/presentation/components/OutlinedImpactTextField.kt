@@ -29,7 +29,7 @@ fun OutlinedImpactTextField(
 ) {
     val measurer = rememberTextMeasurer()
     val constraints = calculateTextConstraints(maxWidth, maxHeight)
-    val textLayoutResult = remember {
+    val textLayoutResult = remember(text, strokeTextStyle, constraints) {
         measurer.measure(
             text = text,
             style = strokeTextStyle,
